@@ -152,4 +152,4 @@ Thumbs.db
 
 # Media and static
 /media/
-/static/
+/staticfiles/
