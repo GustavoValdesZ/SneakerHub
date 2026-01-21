@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SneakerHub - Tu Tienda de Zapatillas Premium{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{% url 'shop:home' %}" class="logo">⚡ SneakerHub</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'shop:home' %}">Inicio</a></li>
+                <li><a href="{% url 'shop:home' %}">Catálogo</a></li>
+                <li class="cart-badge">
+                    <a href="{% url 'shop:cart' %}">
+                        🛒 Carrito
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><span style="color: var(--neon-blue);">Hola, {{ user.first_name|default:user.username }}</span></li>
+                <li><a href="{% url 'shop:logout' %}">Cerrar Sesión</a></li>
+                {% else %}
+                <li><a href="{% url 'shop:login' %}">Iniciar Sesión</a></li>
+                <li><a href="{% url 'shop:register' %}" class="btn-nav"
+                        style="background: var(--gradient-primary); padding: 8px 16px; border-radius: 20px; color: white;">Registrarse</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--dark-light); padding: 3rem 0; text-align: center; margin-top: 4rem;">
+        <div class="container">
+            <p style="color: var(--gray);">© 2026 SneakerHub - Las mejores zapatillas al mejor precio</p>
+            <p style="color: var(--gray); margin-top: 0.5rem;">Hecho con Django ❤️</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

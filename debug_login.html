@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SneakerHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">⚡ SneakerHub</a>
+            <ul class="nav-links">
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/">Catálogo</a></li>
+                <li class="cart-badge">
+                    <a href="/cart/">
+                        🛒 Carrito
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </li>
+                
+                <li><a href="/login/">Iniciar Sesión</a></li>
+                <li><a href="/register/" class="btn-nav"
+                        style="background: var(--gradient-primary); padding: 8px 16px; border-radius: 20px; color: white;">Registrarse</a>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        
+<div class="container" style="margin-top: 50px; max-width: 500px;">
+    <div
+        style="background: var(--dark-light); padding: 40px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <h2 style="text-align: center; margin-bottom: 30px; color: var(--neon-purple);">Iniciar Sesión</h2>
+
+        <form method="post" id="loginForm" novalidate>
+            <input type="hidden" name="csrfmiddlewaretoken" value="75koxsd3XeDyCVgCH61XXTeF9clVaJo9dtFB3GN5TUjS9tXSI7WQMSkpo7829ZQs">
+
+            
+
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="id_email" style="display: block; margin-bottom: 8px; color: var(--gray);">{{
+                    field.label }}</label>
+                <input type="email" name="email" class="form-control" placeholder="Correo Electrónico" maxlength="320" required id="id_email">
+                <small class="error-text" id="error-email"
+                    style="color: #ff6b6b; font-size: 0.85em; display: none; margin-top: 5px;"></small>
+                
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="id_password" style="display: block; margin-bottom: 8px; color: var(--gray);">{{
+                    field.label }}</label>
+                <input type="password" name="password" class="form-control" placeholder="Contraseña" required id="id_password">
+                <small class="error-text" id="error-password"
+                    style="color: #ff6b6b; font-size: 0.85em; display: none; margin-top: 5px;"></small>
+                
+            </div>
+            
+
+            <button type="submit" class="btn btn-primary"
+                style="width: 100%; padding: 12px; font-size: 1.1em; margin-top: 10px; background: var(--gradient-primary); border: none; color: white; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">
+                Entrar
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px; color: var(--gray);">
+            ¿No tienes cuenta? <a href="/register/" style="color: var(--neon-blue);">Regístrate</a>
+        </p>
+    </div>
+</div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--dark-light); padding: 3rem 0; text-align: center; margin-top: 4rem;">
+        <div class="container">
+            <p style="color: var(--gray);">© 2026 SneakerHub - Las mejores zapatillas al mejor precio</p>
+            <p style="color: var(--gray); margin-top: 0.5rem;">Hecho con Django ❤️</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    
+<script src="/static/js/auth_validation.js"></script>
+
+</body>
+
+</html>

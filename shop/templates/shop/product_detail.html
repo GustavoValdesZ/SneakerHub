@@ -1,0 +1,145 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - SneakerHub{% endblock %}
+
+{% block content %}
+<section class="product-detail">
+    <div class="container">
+        <div class="product-detail-grid">
+            <div>
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-detail-image">
+                {% else %}
+                <div class="product-detail-image"
+                    style="display: flex; align-items: center; justify-content: center; font-size: 8rem; height: 500px;">
+                    👟
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="product-detail-info">
+                <p class="product-brand" style="font-size: 1.1rem;">{{ product.brand }}</p>
+                <h1>{{ product.name }}</h1>
+                <p class="product-detail-price">${{ product.price }}</p>
+
+                <div class="product-description">
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <div
+                    style="background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
+                    <p><strong>Color:</strong> {{ product.color }}</p>
+                    <p><strong>Stock disponible:</strong> {{ product.stock }} unidades</p>
+                    <p><strong>Categoría:</strong> {{ product.category.name }}</p>
+                </div>
+
+                <form id="add-to-cart-form" class="size-selector">
+                    {% csrf_token %}
+                    <h3>Selecciona tu talla</h3>
+                    <div class="size-options">
+                        {% for size in product.available_sizes %}
+                        <div class="size-option" data-size="{{ size }}">{{ size }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <input type="hidden" name="size" id="selected-size">
+                    <input type="hidden" name="quantity" value="1">
+
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; padding: 1.5rem; font-size: 1.2rem;">
+                            🛒 Agregar al Carrito
+                        </button>
+                    </div>
+                </form>
+
+                <div id="message" style="margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        {% if related_products %}
+        <section style="margin-top: 4rem;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Productos Relacionados</h2>
+            <div class="products-grid">
+                {% for related in related_products %}
+                <a href="{% url 'shop:product_detail' related.slug %}" class="product-card">
+                    {% if related.image %}
+                    <img src="{{ related.image.url }}" alt="{{ related.name }}" class="product-image">
+                    {% else %}
+                    <div class="product-image"
+                        style="display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                        👟
+                    </div>
+                    {% endif %}
+                    <div class="product-info">
+                        <p class="product-brand">{{ related.brand }}</p>
+                        <h3 class="product-name">{{ related.name }}</h3>
+                        <p class="product-price">${{ related.price }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Size selection
+    document.querySelectorAll('.size-option').forEach(option => {
+        option.addEventListener('click', function () {
+            document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selected-size').value = this.dataset.size;
+        });
+    });
+
+    // Add to cart
+    document.getElementById('add-to-cart-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const size = document.getElementById('selected-size').value;
+        if (!size) {
+            showMessage('Por favor selecciona una talla', 'error');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const response = await fetch('{% url "shop:add_to_cart" product.id %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showMessage('✅ Producto agregado al carrito', 'success');
+                updateCartCount();
+            } else {
+                showMessage('❌ Error al agregar al carrito', 'error');
+            }
+        } catch (error) {
+            showMessage('❌ Error al agregar al carrito', 'error');
+        }
+    });
+
+    function showMessage(text, type) {
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = text;
+        messageEl.style.display = 'block';
+        messageEl.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+        messageEl.style.color = type === 'success' ? 'var(--success)' : '#ef4444';
+
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 3000);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>🔥 Las Mejores Zapatillas</h1>
+        <p>Descubre nuestra colección premium de zapatillas deportivas y casual</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section">
+    <div class="container">
+        <form method="get" action="{% url 'shop:home' %}" class="search-container">
+            <input type="text" name="q" class="search-input" placeholder="Buscar zapatillas por nombre, marca..."
+                value="{{ search_query|default:'' }}">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+</section>
+
+<!-- Categories -->
+{% if categories %}
+<section class="categories">
+    <div class="container">
+        <h2>Categorías</h2>
+        <div class="category-grid">
+            <a href="{% url 'shop:home' %}" class="category-card {% if not current_category %}active{% endif %}">
+                <h3>🌟 Todas</h3>
+            </a>
+            {% for category in categories %}
+            <a href="?category={{ category.slug }}"
+                class="category-card {% if current_category == category.slug %}active{% endif %}">
+                <h3>{{ category.name }}</h3>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured_products and not current_category and not search_query %}
+<section class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>⭐ Destacados</h2>
+        </div>
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <a href="{% url 'shop:product_detail' product.slug %}" class="product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                <div class="product-image"
+                    style="display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                    👟
+                </div>
+                {% endif %}
+                <div class="product-info">
+                    <p class="product-brand">{{ product.brand }}</p>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <p class="product-price">${{ product.price }}</p>
+                    <div class="product-meta">
+                        <span class="badge badge-featured">Destacado</span>
+                        <span class="badge badge-stock">{{ product.stock }} disponibles</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- All Products -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>
+                {% if search_query %}
+                Resultados para "{{ search_query }}"
+                {% elif category_name %}
+                {{ category_name }}
+                {% else %}
+                Catálogo Completo
+                {% endif %}
+            </h2>
+        </div>
+
+        {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <a href="{% url 'shop:product_detail' product.slug %}" class="product-card">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                <div class="product-image"
+                    style="display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                    👟
+                </div>
+                {% endif %}
+                <div class="product-info">
+                    <p class="product-brand">{{ product.brand }}</p>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <p class="product-price">${{ product.price }}</p>
+                    <div class="product-meta">
+                        <span class="badge badge-stock">{{ product.stock }} disponibles</span>
+                        {% if product.featured %}
+                        <span class="badge badge-featured">⭐</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h2>😔 No se encontraron productos</h2>
+            <p>Intenta ajustar tus filtros de búsqueda</p>
+            <a href="{% url 'shop:home' %}" class="btn btn-primary" style="margin-top: 2rem;">Ver todos los
+                productos</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
