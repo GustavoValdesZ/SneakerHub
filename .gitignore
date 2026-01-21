@@ -151,5 +151,4 @@ cython_debug/
 Thumbs.db
 
 # Media and static
-/media/
 /staticfiles/
